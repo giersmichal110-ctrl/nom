@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="pobrane.jpg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Daria & Michał</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0b0d;
+            --accent-pink: #7bd4d8;
+            --accent-glow: rgba(108, 127, 129, 0.4);
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-sub: #a0a0a0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 430px;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        /* ----- EKRAN PIN ----- */
+        #pin-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: radial-gradient(circle at center, #1a0a12 0%, var(--bg-color) 70%);
+            z-index: 100;
+            transition: opacity 0.5s ease;
+        }
+
+        .heart-icon {
+            font-size: 50px;
+            color: var(--accent-pink);
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 10px var(--accent-pink));
+        }
+
+        h1.title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        h1.title span {
+            color: var(--accent-pink);
+            font-style: italic;
+        }
+
+        .subtitle {
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .pin-dots {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-pink);
+            transition: background 0.2s;
+        }
+
+        .dot.filled {
+            background-color: var(--accent-pink);
+            box-shadow: 0 0 10px var(--accent-pink);
+        }
+
+        .shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 260px;
+        }
+
+        .key {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.02);
+            color: #fff;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            touch-action: manipulation;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .key:active {
+            background: var(--accent-pink);
+            transform: scale(0.95);
+        }
+
+        /* ----- GŁÓWNA ZAWARTOŚĆ ----- */
+        #main-content {
+            display: none;
+            width: 100%;
+            padding-bottom: 50px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 40px 0;
+            position: relative;
+        }
+
+        .quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1.2rem;
+            color: #ddd;
+            margin: 20px 0;
+            line-height: 1.4;
+        }
+
+        .counter-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .counter-header {
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .main-days {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 4rem;
+            color: var(--accent-pink);
+            font-weight: 600;
+            line-height: 1;
+            text-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .days-label {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .stat-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            color: var(--text-sub);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .timeline {
+            position: relative;
+            margin: 40px 0;
+            padding-left: 20px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent-pink), transparent);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding-left: 20px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -25px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-pink);
+            box-shadow: 0 0 8px var(--accent-pink);
+        }
+
+        .timeline-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .timeline-date {
+            font-size: 0.75rem;
+            color: var(--accent-pink);
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .timeline-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .timeline-desc {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            line-height: 1.5;
+        }
+
+        .letter-card {
+            background: linear-gradient(135deg, rgba(255, 42, 117, 0.1), rgba(0,0,0,0.4));
+            border: 1px solid var(--accent-pink);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .letter-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .letter-content {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #eaeaea;
+            display: none;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .btn {
+            background: var(--accent-pink);
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--accent-glow);
+            transition: transform 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        
+        }
+        /* Tło ze zdjęciem i rozmyciem */
+.bg-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('pobrane.jpg'); /* PODMIEŃ NAZWĘ PLIKU */
+    background-size: cover;
+    background-position: center;
+    filter: blur(12px) brightness(0.6);
+    transform: scale(1.1);
+    z-index: -2;
+    display: none;
+}
+
+/* Przyciemniająca nakładka dla czytelności */
+.bg-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(11, 11, 13, 0.5);
+    z-index: -1;
+    display: none;
+}
+.story-section {
+    text-align: center;
+    padding: 20px 10px;
+    color: var(--text-main);
+}
+
+.story-chapter {
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    color: var(--text-sub);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.story-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+.story-title span {
+    color: var(--accent-pink);
+    font-style: italic;
+}
+
+.story-text {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: #e0e0e0;
+    text-align: left;
+    max-width: 360px;
+    margin: 0 auto;
+}
+
+.story-text p {
+    margin-bottom: 18px;
+}
+
+.story-text strong {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.story-text .highlight {
+    color: var(--accent-pink);
+}
+
+.story-ending {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    color: #d0d0d0;
+    margin-top: 30px;
+    text-align: center;
+}
+.post-story-image-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 25px 0 35px 0;
+}
+
+.post-story-image {
+    width: 85%;
+    max-width: 350px;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--card-border);
+}
+/* Sekcja galerii zdjęć z serca */
+.gallery-section {
+    width: 100%;
+    margin-top: 40px;
+    padding: 0 5px;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.gallery-card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    height: 180px;
+    border: 1px solid var(--card-border);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gallery-card:active,
+.gallery-card:hover {
+    transform: translateY(-3px) scale(1.02);
+    border-color: var(--accent-pink);
+    box-shadow: 0 8px 20px var(--accent-glow);
+}
+
+.gallery-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Nakładka z gradientem i opisem na kafelku */
+.gallery-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 25px 10px 10px 10px;
+    background: linear-gradient(to top, rgba(11, 11, 13, 0.95) 0%, rgba(11, 11, 13, 0.4) 60%, transparent 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.gallery-caption {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.gallery-heart {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 0.85rem;
+    color: var(--accent-pink);
+    background: rgba(0, 0, 0, 0.4);
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+    </style>
+</head>
+<body>
+<div class="bg-image" id="bg-image"></div>
+<div class="bg-overlay" id="bg-overlay"></div>
+    <div class="container">
+        <div id="pin-screen">
+            <div class="heart-icon">♥</div>
+            <h1 class="title">Daria <span>&</span> Michał</h1>
+            <div class="subtitle">Wpisz PIN, aby otworzyć naszą historię</div>
+
+            <div class="pin-dots" id="dots-container">
+                <div class="dot" id="dot-0"></div>
+                <div class="dot" id="dot-1"></div>
+                <div class="dot" id="dot-2"></div>
+                <div class="dot" id="dot-3"></div>
+            </div>
+
+            <div class="keypad">
+                <button type="button" class="key" data-value="1">1</button>
+                <button type="button" class="key" data-value="2">2</button>
+                <button type="button" class="key" data-value="3">3</button>
+                <button type="button" class="key" data-value="4">4</button>
+                <button type="button" class="key" data-value="5">5</button>
+                <button type="button" class="key" data-value="6">6</button>
+                <button type="button" class="key" data-value="7">7</button>
+                <button type="button" class="key" data-value="8">8</button>
+                <button type="button" class="key" data-value="9">9</button>
+                <div class="key" style="visibility: hidden;"></div>
+                <button type="button" class="key" data-value="0">0</button>
+                <button type="button" class="key" data-value="delete">⌫</button>
+            </div>
+        </div>
+
+        <div id="main-content">
+            <section class="hero">
+                <div class="subtitle">NASZA HISTORIA</div>
+                <h1 class="title">Daria <span>&</span> Michał</h1>
+                <p class="quote">„Jedna chwila, jedno spojrzenie,<br>i świat już nigdy nie był taki sam.”</p>
+            </section>
+
+            <section class="counter-section">
+                <div class="counter-header">Jesteśmy razem już</div>
+                <div class="main-days" id="days-count">0</div>
+                <div class="days-label">dni</div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-number" id="hours-count">0</div>
+                        <div class="stat-label">Godzin</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="minutes-count">0</div>
+                        <div class="stat-label">Minut</div>
+                    </div>
+                </div>
+            </section>
+
+<section class="story-section">
+    <div class="story-chapter">ROZDZIAŁ PIERWSZY</div>
+    <h2 class="story-title">Nasza <span>historia</span></h2>
+
+    <div class="story-text">
+        <p>
+            Było piękne południe w <strong>Biskupcu</strong>. Kiedy wybralismy sie ze szkołą do kina gdzie usiadłaś blisko mnie! Po czym pod wieczór napsiałem do ciebie "a ty co sie tak rozjebałas wiesniaku w tym kinie" to bylo zabawne 
+        <p>
+           W tym momencie zaczelismy pisać ze sobą cały czas, dużo czasu spedzalismy w szkole, lubie wracać do tej chwili
+        <p>
+            
+    </div>
+
+    <div class="story-ending">Tak zaczęła się nasza historia.</div>
+</section>
+<div class="post-story-image-container">
+    <img src="pobran3.jpg" alt="Nasze wspólne zdjęcie" class="post-story-image">
+</div>
+            <div class="subtitle">NASZE WSPOMNIENIA</div>
+            <section class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <div class="timeline-date">18.09.2024</div>
+                        <div class="timeline-title">Pierwsze spotkanie</div>
+                        <div class="timeline-desc">Palarnia wrzesniowa, blaki zielone i rozmowa, która zmieniła wszystko.</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <div class="timeline-date">16.10.2024</div>
+                        <div class="timeline-title">Pierwsza wiadomość</div>
+                        <div class="timeline-desc">Pierwsza wieśniacka wiadomość do ciebie</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <div class="timeline-date">16.12.2024</div>
+                        <div class="timeline-title">Początek naszej drogi</div>
+                        <div class="timeline-desc">Oficjalny dzień, w którym zdecydowaliśmy się iść razem przez życie.</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <div class="timeline-date">27.07.2025</div>
+                        <div class="timeline-title">Pierwsze wspólne wakacje</div>
+                        <div class="timeline-desc">Słoneczne lato, kradzież owoców z pola rolnika, wiele rozmów, wypady rowerowe , mandoria , ale przede wszystkim najlepie spędzony czas razem</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="letter-card">
+                <div class="letter-title">List do Ciebie</div>
+                <p style="font-size: 0.8rem; color: #bbb; margin-bottom: 15px;">Dla Darii</p>
+                <button class="btn" id="open-letter-btn" onclick="toggleLetter()">OTWÓRZ LIST</button>
+                <div class="letter-content" id="letter-text">
+                    Darcia,<br><br>
+                    Dziękuję Ci bardzo za każdą wspólną chwilę, za uśmiech i wsparcie każdego dnia. Każdy dzień z Tobą to wyjątkowa przygoda. I to dopiero początek... ♥
+                    Kocham cię bardzoo
+                </div>
+            </section>
+            <section class="gallery-section">
+    <div class="subtitle">Z SERCA DLA CIEBIE</div>
+    <h2 class="story-title" style="font-size: 1.8rem;">Nasze <span>wspomnienia</span></h2>
+
+    <div class="gallery-grid">
+        <div class="gallery-card">
+            <span class="gallery-heart">♥</span>
+            <img src="foto1.jpg" alt="Wspomnienie 1">
+            <div class="gallery-overlay">
+                <div class="gallery-caption">Pierwszy wspólna nocowanka</div>
+            </div>
+        </div>
+
+        <div class="gallery-card">
+            <span class="gallery-heart">♥</span>
+            <img src="foto2.jpg" alt="Wspomnienie 2">
+            <div class="gallery-overlay">
+                <div class="gallery-caption">Plażnikowanie</div>
+            </div>
+        </div>
+
+        <div class="gallery-card">
+            <span class="gallery-heart">♥</span>
+            <img src="foto3.jpg" alt="Wspomnienie 3">
+            <div class="gallery-overlay">
+                <div class="gallery-caption">Wspólne podróże</div>
+            </div>
+        </div>
+
+        <div class="gallery-card">
+            <span class="gallery-heart">♥</span>
+            <img src="foto4.jpg" alt="Wspomnienie 4">
+            <div class="gallery-overlay">
+                <div class="gallery-caption">Szalony wieczór</div>
+            </div>
+        </div>
+
+        <div class="gallery-card">
+            <span class="gallery-heart">♥</span>
+            <img src="foto5.jpg" alt="Wspomnienie 5">
+            <div class="gallery-overlay">
+                <div class="gallery-caption">Pierwsza wspólna fotka</div>
+            </div>
+        </div>
+
+        <div class="gallery-card">
+            <span class="gallery-heart">♥</span>
+            <img src="foto6.jpg" alt="Wspomnienie 6">
+            <div class="gallery-overlay">
+                <div class="gallery-caption">Twój najpiękniejszy uśmiech</div>
+            </div>
+        </div>
+
+        <div class="gallery-card">
+            <span class="gallery-heart">♥</span>
+            <img src="foto7.jpg" alt="Wspomnienie 7">
+            <div class="gallery-overlay">
+                <div class="gallery-caption">Lenie</div>
+            </div>
+        </div>
+
+        <div class="gallery-card">
+            <span class="gallery-heart">♥</span>
+            <img src="foto8.jpg" alt="Wspomnienie 8">
+            <div class="gallery-overlay">
+                <div class="gallery-caption">Małe i duże sukcesy</div>
+            </div>
+        </div>
+
+        <div class="gallery-card">
+            <span class="gallery-heart">♥</span>
+            <img src="foto9.jpg" alt="Wspomnienie 9">
+            <div class="gallery-overlay">
+                <div class="gallery-caption">Zawsze przy sobie</div>
+            </div>
+        </div>
+
+        <div class="gallery-card">
+            <span class="gallery-heart">♥</span>
+            <img src="foto10.jpg" alt="Wspomnienie 10">
+            <div class="gallery-overlay">
+                <div class="gallery-caption">I tak bez końca...</div>
+            </div>
+        </div>
+    </div>
+</section>
+<audio id="bg-music" loop preload="auto">
+    <source src="muza.mp3" type="audio/mpeg">
+    
+</audio>
+        </div>
+    </div>
+
+    <script>
+        const startDate = new Date(2024, 12, 16, 14, 0, 0);
+        const CORRECT_PIN = "1612";
+        let currentPin = "";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const keys = document.querySelectorAll('.key');
+            keys.forEach(key => {
+                key.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const val = key.getAttribute('data-value');
+                    if (val === 'delete') {
+                        deleteKey();
+                    } else if (val) {
+                        pressKey(val);
+                    }
+                });
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key >= '0' && e.key <= '9') {
+                    pressKey(e.key);
+                } else if (e.key === 'Backspace') {
+                    deleteKey();
+                }
+            });
+        });
+
+        function pressKey(num) {
+            if (currentPin.length < 4) {
+                currentPin += num;
+                updateDots();
+                if (currentPin.length === 4) {
+                    setTimeout(checkPin, 100);
+                }
+            }
+        }
+
+        function deleteKey() {
+            if (currentPin.length > 0) {
+                currentPin = currentPin.slice(0, -1);
+                updateDots();
+            }
+        }
+
+        function updateDots() {
+            for (let i = 0; i < 4; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                if (i < currentPin.length) {
+                    dot.classList.add('filled');
+                } else {
+                    dot.classList.remove('filled');
+                }
+            }
+        }
+
+        function checkPin() {
+    if (currentPin === CORRECT_PIN) {
+        const pinScreen = document.getElementById('pin-screen');
+        pinScreen.style.opacity = '0';
+        
+        // Pokazanie tła po poprawnym PINie
+        document.getElementById('bg-image').style.display = 'block';
+        document.getElementById('bg-overlay').style.display = 'block';
+
+        setTimeout(() => {
+            pinScreen.style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+            startCounter();
+        }, 500);
+    } else {
+        const dots = document.getElementById('dots-container');
+        dots.classList.add('shake');
+        setTimeout(() => {
+            dots.classList.remove('shake');
+            currentPin = "";
+            updateDots();
+        }, 400);
+    }
+}
+
+
+        function startCounter() {
+            function update() {
+                const now = new Date();
+                const diff = now - startDate;
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor(diff / (1000 * 60));
+
+                document.getElementById('days-count').innerText = days.toLocaleString();
+                document.getElementById('hours-count').innerText = hours.toLocaleString();
+                document.getElementById('minutes-count').innerText = minutes.toLocaleString();
+            }
+            update();
+            setInterval(update, 60000);
+        }
+
+        function toggleLetter() {
+            const letter = document.getElementById('letter-text');
+            const btn = document.getElementById('open-letter-btn');
+            if (letter.style.display === 'block') {
+                letter.style.display = 'none';
+                btn.innerText = 'OTWÓRZ LIST';
+            } else {
+                letter.style.display = 'block';
+                btn.innerText = 'ZAMKNIJ LIST';
+            }
+        }
+            function checkPin() {
+    if (currentPin === CORRECT_PIN) {
+        const pinScreen = document.getElementById('pin-screen');
+        pinScreen.style.opacity = '0';
+        
+        // POKAZANIE TŁA ZE ZDJĘCIEM
+        document.getElementById('bg-image').style.display = 'block';
+        document.getElementById('bg-overlay').style.display = 'block';
+
+        // WŁĄCZENIE MUZYKI ZOE KRAVITZ
+        const music = document.getElementById('bg-music');
+        if (music) {
+            music.volume = 0.5; // Głośność 50% (możesz zmienić od 0.0 do 1.0)
+            music.play().catch(err => {
+                console.log("Przeglądarka zablokowała autoodtwarzanie:", err);
+            });
+        }
+
+        setTimeout(() => {
+            pinScreen.style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+            startCounter();
+        }, 500);
+    } else {
+        const dots = document.getElementById('dots-container');
+        dots.classList.add('shake');
+        setTimeout(() => {
+            dots.classList.remove('shake');
+            currentPin = "";
+            updateDots();
+        }, 400);
+    }
+}
+    </script>
+    
+</body>
+</html>
